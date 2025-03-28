@@ -68,7 +68,7 @@ jobs:
           outputs: type=image,name-canonical=true,push=true
       - name: run test blas
         run: |
-          cmd="docker run  --rm -v $PWD:$PWD --entrypoint /opt/conda/envs/shunPykeR/bin/python $( echo  ${{ steps.meta.outputs.tags }} |cut -f 2 -d' ')  $PWD/notebooks/check-blas.py
+          cmd="docker run  --rm -v $PWD:$PWD --entrypoint /opt/conda/envs/shunPykeR/bin/python $( echo  ${{ steps.meta.outputs.tags }} |cut -f 2 -d' ')  $PWD/notebooks/check-blas.py"
           echo $cmd
           $cmd
       - name: run test integration
