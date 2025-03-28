@@ -7,7 +7,7 @@ on:
 #  REGISTRY_IMAGE: user/app
 env:
   REGISTRY: ghcr.io
-  REGISTRY_IMAGE: ${{ github.repository }}
+  REGISTRY_IMAGE: nickp60/shunpyker
 #  IMAGE_NAME: ${{ github.repository }}
 
 
