@@ -66,7 +66,12 @@ jobs:
 #          cache-to: type=gha,mode=max
 #          tags: ${{ env.REGISTRY_IMAGE }}
           outputs: type=image,name-canonical=true,push=true
-      - name: run test
+      - name: run test blas
+        run: |
+          cmd="docker run  --rm -v $PWD:$PWD --entrypoint /opt/conda/envs/shunPykeR/bin/python $( echo  ${{ steps.meta.outputs.tags }} |cut -f 2 -d' ')  $PWD/notebooks/check-blas.py
+          echo $cmd
+          $cmd
+      - name: run test integration
         run: |
           wget https://cf.10xgenomics.com/samples/cell-vdj/4.0.0/sc5p_v2_hs_PBMC_1k/sc5p_v2_hs_PBMC_1k_filtered_feature_bc_matrix.h5
           cmd="docker run  --rm -v $PWD:$PWD --entrypoint /opt/conda/envs/shunPykeR/bin/python $( echo  ${{ steps.meta.outputs.tags }} |cut -f 2 -d' ')  $PWD/notebooks/gha-test.py $PWD/sc5p_v2_hs_PBMC_1k_filtered_feature_bc_matrix.h5"
