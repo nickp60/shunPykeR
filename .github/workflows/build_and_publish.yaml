@@ -40,6 +40,17 @@ jobs:
             latest=auto
       - uses: docker/setup-qemu-action@v3
       - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          load: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          tags: ${{ steps.meta.outputs.tags }}
+      - name: run test
+        run: | wget https://cf.10xgenomics.com/samples/cell-vdj/4.0.0/sc5p_v2_hs_PBMC_1k/sc5p_v2_hs_PBMC_1k_filtered_feature_bc_matrix.h5
+        docker run --rm -v $PWD:$PWD ${{ steps.meta.outputs.tags }} /opt/conda/envs/shunPykeR/bin/python $PWE/notebooks/gha-test.py $PWD/sc5p_v2_hs_PBMC_1k_filtered_feature_bc_matrix.h5
       - uses: docker/build-push-action@v5
         with:
           context: .

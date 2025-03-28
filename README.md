@@ -112,7 +112,7 @@ Using Docker allows you to run ShunPykeR without having to manage any dependenci
 1. [Install Docker](https://docs.docker.com/get-docker/)
 2. Run the following command in your terminal to download and start the Docker image:
    ```
-    docker run -it --rm -p 8888:8888 -v "${PWD}":/home/jovyan/work  kousaa/shunpyker
+    docker run -it --rm -p 8888:8888 -v "${PWD}":/home/jovyan/work  ghcr.io/kousaa/shunpyker
    ```
 
 3. navigate to the link shown in the console; it start with something like http://127.0.0.1:8888
