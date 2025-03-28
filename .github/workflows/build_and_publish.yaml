@@ -65,7 +65,7 @@ jobs:
       - name: run test
         run: |
           wget https://cf.10xgenomics.com/samples/cell-vdj/4.0.0/sc5p_v2_hs_PBMC_1k/sc5p_v2_hs_PBMC_1k_filtered_feature_bc_matrix.h5
-          docker run --rm -v $PWD:$PWD ${{ steps.meta.outputs.tags }} /opt/conda/envs/shunPykeR/bin/python $PWE/notebooks/gha-test.py $PWD/sc5p_v2_hs_PBMC_1k_filtered_feature_bc_matrix.h5
+          docker run -it  --rm -v $PWD:$PWD ${{ steps.meta.outputs.tags }} /opt/conda/envs/shunPykeR/bin/python $PWE/notebooks/gha-test.py $PWD/sc5p_v2_hs_PBMC_1k_filtered_feature_bc_matrix.h5
 
       - name: Export digest
         run: |
