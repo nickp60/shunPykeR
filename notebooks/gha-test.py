@@ -22,6 +22,15 @@ import re
 import sys
 import matplotlib.lines as lines
 
+import numpy
+import ctypes
+
+dll = ctypes.CDLL(numpy.core._multiarray_umath.__file__)
+get_config = dll.openblas_get_config
+get_config.restype=ctypes.c_char_p
+res = get_config()
+print('OpenBLAS get_config returned', str(res))
+
 sc.set_figure_params(dpi=80, dpi_save=300, color_map='Spectral_r', vector_friendly=True, transparent=True)
 sc.settings.verbosity = 3 # verbosity: errors (0), warnings (1), info (2), hints (3)
 sc.logging.print_header()
@@ -54,8 +63,8 @@ def observe_variance(anndata_object):
     fig.tight_layout()
     plot = plt.show
     return(plot)
-    
-    
+
+
     # divergent
 user_defined_palette =  [ '#3283FE', '#16FF32', '#F6222E',  '#FEAF16', '#BDCDFF', '#3B00FB', '#1CFFCE', '#C075A6', '#F8A19F', '#B5EFB5', '#FBE426', '#C4451C', '#2ED9FF', '#c1c119', '#8b0000', '#FE00FA', '#1CBE4F', '#1C8356', '#0e452b', '#AA0DFE', '#B5EFB5', '#325A9B', '#90AD1C']
 # gradient of one color
@@ -69,8 +78,8 @@ adata.var_names_make_unique()
 print(adata.shape) # check the number of cells and genes in each sample
 
 
-adata.raw = adata # keep a copy of the raw adata 
-np.random.seed(42) 
+adata.raw = adata # keep a copy of the raw adata
+np.random.seed(42)
 index_list = np.arange(adata.shape[0]) # randomize the order of cells for plotting
 np.random.shuffle(index_list)
 adata = adata[index_list]
@@ -87,7 +96,7 @@ adata.var['mt'] = adata.var_names.str.startswith(('MT-', 'mt-'))
 adata.var['ribo'] = adata.var_names.str.startswith(('RPS','RPL', 'Rps', 'Rpl'))
 adata.var['hb'] = adata.var_names.str.startswith(('HB', 'Hb'))
 
-# for each cell compute fraction of counts in mitochondrial, ribosomal and hemoglobin genes vs. all genes 
+# for each cell compute fraction of counts in mitochondrial, ribosomal and hemoglobin genes vs. all genes
 adata.obs['mito_frac'] = np.sum(adata[:,adata.var['mt']==True].X, axis=1) / np.sum(adata.X, axis=1)
 adata.obs['ribo_frac'] = np.sum(adata[:,adata.var['ribo']==True].X, axis=1) / np.sum(adata.X, axis=1)
 adata.obs['hb_frac'] = np.sum(adata[:,adata.var['hb']==True].X, axis=1) / np.sum(adata.X, axis=1)
