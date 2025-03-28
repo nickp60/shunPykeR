@@ -22,14 +22,6 @@ import re
 import sys
 import matplotlib.lines as lines
 
-import numpy
-import ctypes
-
-dll = ctypes.CDLL(numpy.core._multiarray_umath.__file__)
-get_config = dll.openblas_get_config
-get_config.restype=ctypes.c_char_p
-res = get_config()
-print('OpenBLAS get_config returned', str(res))
 
 sc.set_figure_params(dpi=80, dpi_save=300, color_map='Spectral_r', vector_friendly=True, transparent=True)
 sc.settings.verbosity = 3 # verbosity: errors (0), warnings (1), info (2), hints (3)
