@@ -60,6 +60,7 @@ jobs:
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
           tags: ${{ steps.meta.outputs.tags }}
+          load: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
 #          tags: ${{ env.REGISTRY_IMAGE }}
@@ -67,7 +68,7 @@ jobs:
       - name: run test
         run: |
           wget https://cf.10xgenomics.com/samples/cell-vdj/4.0.0/sc5p_v2_hs_PBMC_1k/sc5p_v2_hs_PBMC_1k_filtered_feature_bc_matrix.h5
-          docker run  --rm -v $PWD:$PWD --entrypoint '/opt/conda/envs/shunPykeR/bin/python' ${{ steps.meta.outputs.tags }}  $PWE/notebooks/gha-test.py $PWD/sc5p_v2_hs_PBMC_1k_filtered_feature_bc_matrix.h5
+          docker run  --rm -v $PWD:$PWD --entrypoint '/opt/conda/envs/shunPykeR/bin/python' ${{ steps.meta.outputs.tags }}  $PWD/notebooks/gha-test.py $PWD/sc5p_v2_hs_PBMC_1k_filtered_feature_bc_matrix.h5
 
       - name: Export digest
         run: |
