@@ -36,7 +36,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.REGISTRY_IMAGE }}
           tags: |
             type=ref,event=tag
             type=raw,value={{sha}}
@@ -59,12 +59,13 @@ jobs:
         with:
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
-          tags: ${{ env.REGISTRY_IMAGE }}
+          tags: ${{ steps.meta.outputs.tags }}
+#          tags: ${{ env.REGISTRY_IMAGE }}
           outputs: type=image,push-by-digest=true,name-canonical=true,push=true
       - name: run test
         run: |
           wget https://cf.10xgenomics.com/samples/cell-vdj/4.0.0/sc5p_v2_hs_PBMC_1k/sc5p_v2_hs_PBMC_1k_filtered_feature_bc_matrix.h5
-          docker run --rm -v $PWD:$PWD tmp /opt/conda/envs/shunPykeR/bin/python $PWE/notebooks/gha-test.py $PWD/sc5p_v2_hs_PBMC_1k_filtered_feature_bc_matrix.h5
+          docker run --rm -v $PWD:$PWD ${{ steps.meta.outputs.tags }} /opt/conda/envs/shunPykeR/bin/python $PWE/notebooks/gha-test.py $PWD/sc5p_v2_hs_PBMC_1k_filtered_feature_bc_matrix.h5
 
       - name: Export digest
         run: |
@@ -106,7 +107,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY_IMAGE }}
+          images: ${{ env.REGISTRY }}/${{ env.REGISTRY_IMAGE }}
           tags: |
             type=ref,event=branch
             type=ref,event=pr
