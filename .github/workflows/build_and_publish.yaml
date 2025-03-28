@@ -60,6 +60,8 @@ jobs:
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
           tags: ${{ steps.meta.outputs.tags }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 #          tags: ${{ env.REGISTRY_IMAGE }}
           outputs: type=image,name-canonical=true,push=true
       - name: run test
