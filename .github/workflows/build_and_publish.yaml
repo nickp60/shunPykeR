@@ -62,9 +62,8 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           load: true
           provenance: false
-         cache-from: type=gha
-         cache-to: type=gha,mode=max
-         tags: ${{ env.REGISTRY_IMAGE }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           outputs: type=image,name-canonical=true,push=true
       # - name: run test blas
       #   run: |
