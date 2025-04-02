@@ -19,7 +19,7 @@ jobs:
       matrix:
         platform:
           - linux/amd64
-#          - linux/arm64
+          - linux/arm64
     steps:
       - name: Prepare
         run: |
@@ -62,21 +62,21 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           load: true
           provenance: false
-#          cache-from: type=gha
-#          cache-to: type=gha,mode=max
-#          tags: ${{ env.REGISTRY_IMAGE }}
+         cache-from: type=gha
+         cache-to: type=gha,mode=max
+         tags: ${{ env.REGISTRY_IMAGE }}
           outputs: type=image,name-canonical=true,push=true
-      - name: run test blas
-        run: |
-          cmd="docker run  --rm -v $PWD:$PWD --entrypoint /opt/conda/envs/shunPykeR/bin/python $( echo  ${{ steps.meta.outputs.tags }} |cut -f 2 -d' ')  $PWD/notebooks/check-blas.py"
-          echo $cmd
-          $cmd
-      - name: run test integration
-        run: |
-          wget https://cf.10xgenomics.com/samples/cell-vdj/4.0.0/sc5p_v2_hs_PBMC_1k/sc5p_v2_hs_PBMC_1k_filtered_feature_bc_matrix.h5
-          cmd="docker run  --rm -v $PWD:$PWD -e OPENBLAS_CORETYPE=ARCH_X86 --entrypoint /opt/conda/envs/shunPykeR/bin/python $( echo  ${{ steps.meta.outputs.tags }} |cut -f 2 -d' ')  $PWD/notebooks/gha-test.py $PWD/sc5p_v2_hs_PBMC_1k_filtered_feature_bc_matrix.h5"
-          echo $cmd
-          $cmd
+      # - name: run test blas
+      #   run: |
+      #     cmd="docker run  --rm -v $PWD:$PWD --entrypoint /opt/conda/envs/shunPykeR/bin/python $( echo  ${{ steps.meta.outputs.tags }} |cut -f 2 -d' ')  $PWD/notebooks/check-blas.py"
+      #     echo $cmd
+      #     $cmd
+      # - name: run test integration
+      #   run: |
+      #     wget https://cf.10xgenomics.com/samples/cell-vdj/4.0.0/sc5p_v2_hs_PBMC_1k/sc5p_v2_hs_PBMC_1k_filtered_feature_bc_matrix.h5
+      #     cmd="docker run  --rm -v $PWD:$PWD -e OPENBLAS_CORETYPE=ARCH_X86 --entrypoint /opt/conda/envs/shunPykeR/bin/python $( echo  ${{ steps.meta.outputs.tags }} |cut -f 2 -d' ')  $PWD/notebooks/gha-test.py $PWD/sc5p_v2_hs_PBMC_1k_filtered_feature_bc_matrix.h5"
+      #     echo $cmd
+      #     $cmd
 
       - name: Export digest
         run: |
@@ -91,6 +91,36 @@ jobs:
           path: ${{ runner.temp }}/digests/*
           if-no-files-found: error
           retention-days: 1
+
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Log in to the Container registry
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: run test blas
+        run: |
+          cmd="docker run  --rm -v $PWD:$PWD --entrypoint /opt/conda/envs/shunPykeR/bin/python $( echo  ${{ steps.meta.outputs.tags }} |cut -f 2 -d' ')  $PWD/notebooks/check-blas.py"
+          echo $cmd
+          $cmd
+      - name: run test integration
+        run: |
+          if [ "${{ matrix.os }}" == "macos-latest" ];
+          then
+          ARCH=AMD_X86
+          else"
+          ARCH=ARCH_X86
+          fi
+          wget https://cf.10xgenomics.com/samples/cell-vdj/4.0.0/sc5p_v2_hs_PBMC_1k/sc5p_v2_hs_PBMC_1k_filtered_feature_bc_matrix.h5
+          cmd="docker run  --rm -v $PWD:$PWD -e OPENBLAS_CORETYPE=${ARCH}  --entrypoint /opt/conda/envs/shunPykeR/bin/python $( echo  ${{ steps.meta.outputs.tags }} |cut -f 2 -d' ')  $PWD/notebooks/gha-test.py $PWD/sc5p_v2_hs_PBMC_1k_filtered_feature_bc_matrix.h5"
+          echo $cmd
+          $cmd
 
   merge:
     runs-on: ubuntu-latest
