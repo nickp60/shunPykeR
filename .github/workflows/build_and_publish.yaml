@@ -59,12 +59,13 @@ jobs:
         with:
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
-          tags: ${{ steps.meta.outputs.tags }}
+          #tags: ${{ steps.meta.outputs.tags }}
           load: true
           provenance: false
           cache-from: type=gha
           cache-to: type=gha,mode=max
           outputs: type=image,name-canonical=true,push=true
+          tags: ${{ env.REGISTRY_IMAGE }}
       # - name: run test blas
       #   run: |
       #     cmd="docker run  --rm -v $PWD:$PWD --entrypoint /opt/conda/envs/shunPykeR/bin/python $( echo  ${{ steps.meta.outputs.tags }} |cut -f 2 -d' ')  $PWD/notebooks/check-blas.py"
